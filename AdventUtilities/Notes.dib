@@ -1,0 +1,142 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!fsharp
+
+type Color =
+| None = -1
+| Red = 0
+| Green = 1
+| Blue = 2
+
+for i in 0 .. 2 do
+printfn $"{enum<Color> (i)}"
+
+#!fsharp
+
+let fullList = [1 .. 100]
+let smallSlice = fullList[..5]
+printfn $"Small slice: {smallSlice}"
+
+#!fsharp
+
+let arr = array2D [[1;2;3];[4;5;6];[7;8;9]]
+
+let row0 = arr[0,*]
+printfn "First row: %A" row0
+
+let col0 = arr[*,0]
+printfn "First column: %A" col0
+
+#!fsharp
+
+let fib =
+    (0, 1)
+    |> Seq.unfold (fun state ->
+        let currentValue, nextValue = state
+        if currentValue < 0 then
+            None
+        else
+            let followingValue = currentValue + nextValue
+            let currentState = nextValue, followingValue
+            Some (currentValue, currentState))
+
+printfn "Fibonacci numbers:"
+for x in fib do printf $"{x} "
+
+#!fsharp
+
+let rec sumRec list =
+    match list with
+    | head :: tail -> head + sumRec tail
+    | [] -> 0
+
+let sol = sumRec [1;2;3;4;5]
+printfn $"Sum of the list: {sol}"
+
+let sum list =
+    let rec loop list acc =
+        match list with
+        | head :: tail -> loop tail (acc + head)
+        | [] -> acc
+
+    loop list 0
+
+let result = sum [1;2;3;4;5]
+printfn $"Sum of the list using tail recursive function: {result}"
+
+#!fsharp
+
+let numList = [1 .. 10]
+
+let splitFunction l =
+    let rec loop = function
+    | (_,[],a,b) -> (a,b)
+    | (true, h::t, a, b) -> loop(false,t,h::a,b)
+    | (false,h::t,a,b) -> loop(true,t,a,h::b)
+    in loop(true,l,[],[])
+
+let splitFunction2 l =
+    let len = l |> List.length in
+    l |> List.mapi (fun i x -> (i<len/2,x))
+    |> List.partition fst
+    |> (fun (x,y) -> ((x |> List.map snd),(y |> List.map snd)))
+
+let splitFunction3 l =
+    let len = List.length l in
+    l |> List.fold (fun (n,(a,b)) x ->
+       if n<len/2 then (n+1,(x::a,b)) else (n+1,(a,x::b)))
+       (0,([],[])) |> snd
+
+let splitFunction4 l =
+    List.fold (fun (xs, ys) elem -> (elem::ys, xs)) ([], []) l
+
+let splitFunction5 l =
+    let rec loop t (xs, ys) =
+        match t with
+        | x::y::rest -> loop rest (x::xs, y::ys)
+        | [x] -> (x::xs, ys)
+        | _ -> (xs, ys)
+    loop l ([], [])
+
+let (first, second) = numList |> splitFunction
+printfn "First split function:"
+printfn $"""First list: [ {System.String.Join(", ", first |> List.rev)} ]"""
+printfn $"""Second list: [ {System.String.Join(", ", second |> List.rev)} ]"""
+
+let (first2, second2) = numList |> splitFunction2
+printfn "\nSecond split function:"
+printfn $"""First list: [ {System.String.Join(", ", first2)} ]"""
+printfn $"""Second list: [ {System.String.Join(", ", second2)} ]"""
+
+let (first3, second3) = numList |> splitFunction3
+printfn "\nThird split function:"
+printfn $"""First list: [ {System.String.Join(", ", first3 |> List.rev)} ]"""
+printfn $"""Second list: [ {System.String.Join(", ", second3 |> List.rev)} ]"""
+
+let (first4, second4) = numList |> splitFunction4
+printfn "\nFourth split function:"
+printfn $"""First list: [ {System.String.Join(", ", first4 |> List.rev)} ]"""
+printfn $"""Second list: [ {System.String.Join(", ", second4 |> List.rev)} ]"""
+
+let (first5, second5) = numList |> splitFunction5
+printfn "\nFifth split function:"
+printfn $"""First list: [ {System.String.Join(", ", first5 |> List.rev)} ]"""
+printfn $"""Second list: [ {System.String.Join(", ", second5 |> List.rev)} ]"""
+
+#!fsharp
+
+let splitFunctionX (l: int list) =
+    let first =
+        l |> List.mapi (fun i x -> if i % 2 = 0 then Some x else None) |> List.choose id
+    let second =
+        l |> List.except first
+
+    (first, second)
+
+
+let someList = [1..21]
+let (listX, listY) = splitFunctionX someList
+listX |> display
+listY |> display

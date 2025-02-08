@@ -1,0 +1,92 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!fsharp
+
+let rules =
+    ["47|53"; "97|13"; "97|61"; "97|47"; "75|29"; "61|13"; "75|53"; "29|13"; "97|29"; "53|29"; "61|53"; "97|53"; "61|29"; "47|13"; "75|47"; "97|75"; "47|61"; "75|61"; "47|29"; "75|13"; "53|13"]
+
+let pageMap =
+    seq {
+        for rule in rules do
+            let (prevId, followId) =
+                rule.Split '|' |> Array.map int |> fun arr -> (arr[0], arr[1])
+
+            yield (prevId, [followId])
+            yield (followId, [prevId * -1])
+    }
+    |> Map.ofSeq
+
+let (|IntList|_|) key = pageMap |> Map.tryFind key
+
+let tryGetList = function
+    | IntList list -> list
+    | _ -> []
+
+let updateList page key pageMap =
+    let storedList = Map.tryFind key pageMap
+    let updatedList =
+        match storedList with
+        | Some xs -> Some (page::xs)
+        | None -> None
+    
+    if updatedList.IsSome then do
+        pageMap = pageMap.Change (key, updatedList)
+
+updateList 88 13
+
+pageMap |> display
+
+#!fsharp
+
+let testPages = [75; 47; 61; 53; 29]
+let relevantRules = [(47, 53); (75, 29); (75, 53); (53, 29); (61, 53); (61, 29); (75, 47); (47, 61);
+ (75, 61); (47, 29)]
+
+let pageMap =
+    testPages |> List.indexed |> List.map (fun (idx, elem) -> (elem, idx)) |> Map.ofList
+
+let (|CorrectOrder|_|) ((leading: int), (trailing: int)) =
+    if (pageMap[leading] < pageMap[trailing]) then Some true else None
+
+printfn "Page order adheres to all rules: %b" (relevantRules |> List.forall (function CorrectOrder _ -> true | _ -> false)) 
+
+let firstRules = relevantRules |> List.countBy fst |> Map.ofList
+let updatedMap = firstRules |> Map.add 29 0
+let countRules = relevantRules |> List.countBy snd |> List.map (fun (k, v) -> (k, (updatedMap[k], v))) |> Map.ofList
+
+// firstRules |> display
+countRules |> display
+
+#!fsharp
+
+let (|DivisibleBy|_|) by n =
+    if n % by = 0 then
+        Some DivisibleBy
+    else
+        None
+
+let fizzbuzz = function
+    | DivisibleBy 3 & DivisibleBy 5 -> "FizzBuzz"
+    | DivisibleBy 3 -> "Fizz"
+    | DivisibleBy 5 -> "Buzz"
+    | i -> string i
+
+for i in 1 .. 50 do
+    printfn "%A" (fizzbuzz i)
+
+#!fsharp
+
+let correctList originalList wrongIndex =
+    let element = originalList |> List.item wrongIndex
+    let removedElementList = originalList |> List.removeAt wrongIndex
+    let correctedList = removedElementList |> List.insertAt (wrongIndex + 1) element
+
+    correctedList
+
+let summat = [1;2;4;3;5]
+let correctedList = correctList summat 2
+
+printfn "Original list: %A" summat
+printfn "Modified list: %A" correctedList
