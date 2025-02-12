@@ -1,0 +1,21 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!markdown
+
+### Practice in 2D array slicing
+
+#!fsharp
+
+let testGrid = 
+    array2D [ ['a'; 'b'; 'c'; 'd'; 'e']
+              ['f'; 'g'; 'h'; 'i'; 'j']
+              ['k'; 'l'; 'm'; 'n'; 'o'] ]
+
+let topRow = testGrid[0, *]
+let middleColumn = testGrid[*, 2]
+let lastThree = testGrid[2, 2..]
+
+printfn $"%A{testGrid}\n"
+printfn "%A\n%A\n%A" topRow middleColumn lastThree
