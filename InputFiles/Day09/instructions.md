@@ -44,7 +44,7 @@ The first example above, `2333133121414131402`, represents these individual bloc
 
 ### Move file blocks
 
-The amphipod would like to move file blocks \times*one at a time from the end** of the disk to the **leftmost free space block** (until there are no gaps remaining between file blocks). For the disk map `12345`, the process looks like this:
+The amphipod would like to move file blocks **one at a time from the end** of the disk to the **leftmost free space block** (until there are no gaps remaining between file blocks). For the disk map `12345`, the process looks like this:
 
     0..111....22222
     02.111....2222.
@@ -94,6 +94,7 @@ In this example, the checksum is the sum of these, `1928`.
 Compact the amphipod's hard drive using the process he requested. What is the resulting filesystem checksum?  
 ***(Be careful copy/pasting the input for this puzzle; it is a single, very long line.)***
 
+<details><summary>Answer</summary>&emsp;6258319840548</details>
 <hr><br>
 
 # Part Two
@@ -123,3 +124,5 @@ The first example from above now proceeds differently:
 The process of updating the filesystem checksum is the same; now, this example's checksum would be `2858`.
 
 Start over, now compacting the amphipod's hard drive using this new method instead. What is the resulting filesystem checksum?
+
+<details><summary>Answer</summary>&emsp;6286182965311</detail>

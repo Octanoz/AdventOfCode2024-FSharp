@@ -1,0 +1,84 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!fsharp
+
+open System.Text.RegularExpressions
+
+let numString = "2334234"
+let stringArray = 
+    Regex.Split(numString, @"(?<num>\d)", RegexOptions.ExplicitCapture)
+    |> Array.filter (fun s -> s.Length = 1)
+    |> Array.map (fun s -> int (s[0] - '0'))
+
+stringArray |> display
+
+#!fsharp
+
+let digitList = [0..9] |> List.map (fun n -> char (n + int '0'))
+
+let numChar = '4'
+let getLetterOf number = digitList[number]
+let getNumberOf letter = digitList |> List.findIndex (fun c -> c = letter)
+
+for character in ['1'; '7'; '4'; '5'] do printf $"{getNumberOf character} "
+printfn ""
+
+for num in [4;8;2;9] do printf $"{getLetterOf num} "
+
+digitList |> display
+
+#!fsharp
+
+let keepSplitter (separator: string) (line: string): string list =
+    let pattern = $@"(?<splitter>{separator})"
+    System.Text.RegularExpressions.Regex.Split(line, pattern, System.Text.RegularExpressions.RegexOptions.ExplicitCapture) |> List.ofArray
+
+let randomText = "asfadBillsgdsdBilldfafsBillfgsfgs"
+let parts = randomText |> keepSplitter "Bill"
+
+//output: asfad Bill sgdsd Bill dfafs Bill fgsfgs
+for part in parts do
+    printf "%s " part
+
+#!fsharp
+
+let (.*) x y = x * (y |> double)
+
+let crazyTotal =
+    [0. .. 100]
+    |> List.mapi (fun i x -> i .* x)
+    |> List.sum
+
+crazyTotal |> display
+
+#!fsharp
+
+let testRange = new Range(5, 10)
+
+printfn "%i" (testRange.Start.GetOffset(0))
+printfn "%i" (testRange.End.Value)
+
+let rangeValues = [testRange.Start.Value .. testRange.End.Value] |> List.map (fun x -> x * 10) |> List.sum
+
+rangeValues |> display
+
+#!fsharp
+
+let numberList = [1 .. 10]
+let evenList, oddList = numberList |> List.partition (fun n -> Int32.IsEvenInteger n)
+
+printfn $"%A{numberList}"
+printfn $"%A{oddList}"
+printfn $"%A{evenList}"
+
+#!fsharp
+
+let someString = "435959348"
+let floatList = someString |> Seq.map (fun c -> int64 <| Char.GetNumericValue(c)) |> List.ofSeq
+let charList = someString |> Seq.map id |> List.ofSeq
+
+
+printfn $"%A{floatList}"
+printfn $"%A{charList}"

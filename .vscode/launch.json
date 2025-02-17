@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Day06/bin/Debug/net9.0/Day06.exe",
+            "program": "${workspaceFolder}/Day09/bin/Debug/net9.0/Day09.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,

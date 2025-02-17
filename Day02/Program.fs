@@ -32,9 +32,10 @@ let dampenList (nums: int list) =
     seq { for i in 0 .. nums.Length - 1 -> nums |> List.removeAt i }
 
 let problemDampenerCheck nums =
-    match isValidList nums with
-    | true -> true
-    | false -> nums |> dampenList |> Seq.exists (fun l -> isValidList l)
+    if isValidList nums then
+        true
+    else
+        nums |> dampenList |> Seq.exists (fun l -> isValidList l)
 
 let partOne = input |> parse |> List.filter (fun l -> isValidList l) |> List.length
 
