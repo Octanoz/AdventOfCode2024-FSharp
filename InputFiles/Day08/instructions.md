@@ -93,6 +93,7 @@ Because the topmost A-frequency antenna overlaps with a 0-frequency antinode, th
 
 Calculate the impact of the signal. How many unique locations **`within the bounds of the map`** contain an antinode?
 
+<details><summary>Answer</summary>&emsp;&emsp;398</details>
 <hr><br>
 
 # Part Two
@@ -140,3 +141,5 @@ The original example now has `34` antinodes, including the antinodes that appear
 ## Challenge 2
 
 Calculate the impact of the signal using this updated model. How many unique locations within the bounds of the map contain an antinode?
+
+<details><summary>Answer</summary>&emsp;&emsp;1333</details>

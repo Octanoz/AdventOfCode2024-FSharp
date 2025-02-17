@@ -13,11 +13,11 @@ type Operator =
 
 let parseLine (line: string) =
     let parts = line.Split ':'
-    let target = parts[0] |> Int64.Parse
+    let target = int64 parts[0]
 
     let nums =
         parts[1].Split(' ', StringSplitOptions.RemoveEmptyEntries)
-        |> Array.map Int64.Parse
+        |> Array.map int64
         |> List.ofArray
 
     target, nums

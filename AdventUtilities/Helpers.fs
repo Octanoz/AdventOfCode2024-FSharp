@@ -8,6 +8,7 @@ module Helpers =
         let inline mapPair f (a, b) = (f a, f b)
         let inline pairSum (a, b) = a + b
         let inline movePair (row, col) (dRow, dCol) = (row + dRow, col + dCol)
+        let inline diffPair (row, col) (otherRow, otherCol) = (row - otherRow, col - otherCol)
         let inline factorPair (sx, sy) (a, b) = (a * sx, b * sy)
         let inline equalPair (a1, b1) (a2, b2) = a1 = a2 && b1 = b2
         let inline comparePair (a1, b1) (a2, b2) = compare (a1, b1) (a2, b2)
@@ -19,6 +20,10 @@ module Helpers =
         let inline compareTriple (a1, b1, c1) (a2, b2, c2) = compare (a1, b1, c1) (a2, b2, c2)
 
     module Grid =
+        let stringArrayTo2DCharArray (input: string array) =
+            let maxRow = input.Length
+            let maxCol = input[0].Length
+            Array2D.init maxRow maxCol (fun i j -> if j < maxCol then input[i][j] else ' ')
 
         type Direction =
             | Up
