@@ -93,7 +93,7 @@ module Helpers =
                 move 3
             }
 
-        let isWithinLimits (row, col) (grid: char[,]) =
+        let isWithinLimits (row, col) grid =
             let maxRow = grid |> Array2D.length1
             let maxCol = grid |> Array2D.length2
             row >= 0 && row < maxRow && col >= 0 && col < maxCol

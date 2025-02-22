@@ -13,7 +13,7 @@ let manualsSection = input.[splitIndex + 1 ..]
 let rules =
     [ for rule in (rulesSection: string array) ->
           let [| leading; trailing |] = rule.Split '|'
-          (int leading, int trailing) ]
+          int leading, int trailing ]
 
 let manuals =
     manualsSection

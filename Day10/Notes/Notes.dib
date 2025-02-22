@@ -1,0 +1,10 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"languageName":"csharp","name":"csharp"}]}}
+
+#!fsharp
+
+let testString = "abcd"
+let chars = testString |> Seq.map id
+
+chars |> display

@@ -79,6 +79,7 @@ This larger example has `9` trailheads. Considering the trailheads in reading or
 
 The reindeer gleefully carries over a protractor and adds it to the pile. What is the sum of the scores of all trailheads on your topographic map?
 
+<details><summary>Answer</summary>&emsp;430</details>
 <hr><br>
 
 # Part Two
@@ -144,3 +145,5 @@ Considering its trailheads in reading order, they have ratings of `20`, `24`, `1
 ## Challenge 2
 
 You're not sure how, but the reindeer seems to have crafted some tiny flags out of toothpicks and bits of paper and is using them to mark trailheads on your topographic map. What is the sum of the ratings of all trailheads?
+
+<details><summary>Answer</summary>&emsp;928</details>
