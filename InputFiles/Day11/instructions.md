@@ -73,6 +73,7 @@ In this example, after blinking `six times`, you would have `22 stones`. After b
 
 Consider the arrangement of stones in front of you. How many stones will you have after blinking `25 times`?
 
+<details><summary>Answer</summary>&emsp;186424</details>
 <hr><br>
 
 # Part Two
@@ -82,3 +83,5 @@ The Historians sure are taking a long time. To be fair, the infinite corridors a
 ## Challenge 2
 
 How many stones would you have after blinking a total of `75 times`?
+
+<details><summary>Answer</summary>&emsp;219838428124832</details>

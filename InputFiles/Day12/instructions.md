@@ -114,6 +114,7 @@ It contains:
 
 What is the total price of fencing all regions on your map?
 
+<details><summary>Answer</summary>&emsp;1415378</details>
 <hr><br>
 
 # Part Two
@@ -210,3 +211,5 @@ Adding these together produces its new total price of `1206`.
 ## Challenge 2
 
 What is the new total price of fencing all regions on your map?
+
+<details><summary>Answer</summary>&emsp;862714</details>

@@ -1,7 +1,5 @@
-﻿open System
-open AdventUtilities
-open Helpers
-open Grid
+﻿open AdventUtilities
+open Helpers.Grid
 open System.Collections.Generic
 
 let inputData = InputData()
@@ -13,7 +11,6 @@ let grid = stringArrayTo2DCharArray input |> Array2D.map (fun c -> int (c - '0')
 let maxRow = grid |> Array2D.length1
 let maxCol = grid |> Array2D.length2
 
-// Checks if the position is within bounds of the grid
 let isValid pos =
     fst pos >= 0 && fst pos < maxRow && snd pos >= 0 && snd pos < maxCol
 
@@ -29,19 +26,20 @@ let validNeighbours currentPos currentVal =
         |> List.filter (fun pos -> pos |> isValid && findValue pos = numberSequence[index])
     | None -> []
 
-let rec dfs (stack: Position list) uniqueNines =
-    match stack with
-    | [] -> Set.count uniqueNines
-    | current :: rest ->
-        let currentValue = findValue current
+let findReachableNinesFromTrailhead trailhead =
+    let rec dfs positions uniqueNines =
+        match positions with
+        | [] -> Set.count uniqueNines
+        | current :: rest ->
+            let currentValue = findValue current
 
-        match currentValue with
-        | 9 -> dfs rest (uniqueNines |> Set.add current)
-        | _ ->
-            let newStack = validNeighbours current currentValue |> List.append rest
-            dfs newStack uniqueNines
+            match currentValue with
+            | 9 -> dfs rest (uniqueNines |> Set.add current)
+            | _ ->
+                let newPositions = validNeighbours current currentValue
+                dfs (newPositions @ rest) uniqueNines
 
-let findReachableNinesFromTrailhead (trailhead: Position) = dfs [ trailhead ] Set.empty
+    dfs [ trailhead ] Set.empty
 
 // Find all '0', the trailheads, in the original input data
 let trailheads =
@@ -53,10 +51,12 @@ let trailheads =
     |> Seq.concat
     |> List.ofSeq
 
-let resultOne (grid: int[,]) =
+let resultOne =
     trailheads
     |> List.map (fun trailhead -> findReachableNinesFromTrailhead trailhead)
     |> List.sum
+
+
 
 let findPaths =
     let queue = Queue<Position>() // .NET Queue<T>
@@ -65,9 +65,9 @@ let findPaths =
         queue.Enqueue(th)
 
     let rec bfs score =
-        if queue.Count = 0 then
-            score
-        else
+        match queue.Count with
+        | 0 -> score
+        | _ ->
             let current = queue.Dequeue()
             let currentValue = findValue current
 
@@ -82,7 +82,7 @@ let findPaths =
     bfs 0 // BFS and initial state
 
 let partOne =
-    printfn "In part one, the sum of the scores of all trailheads is %i" (resultOne grid)
+    printfn "In part one, the sum of the scores of all trailheads is %i" resultOne
 
 let partTwo =
     printfn "In part two, the score of all paths to the tops is %i" findPaths
