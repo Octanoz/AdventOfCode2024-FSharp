@@ -24,7 +24,7 @@ The `area` of a region is simply the number of garden plots the region contains.
 ### Perimeter
 
 Each garden plot is a square and so has four sides.  
-The `perimeter` of a region is the number of sides of garden plots in the region that *do not touch another garden plot in the same region*. The type `A` and `C` plants are each in a region with `perimeter 10`. The type `B` and `E` plants are each in a region with `perimeter 8`. The lone `D` plot forms its own region with `perimeter 4`.
+The `perimeter` of a region is the number of sides of garden plots in a region that *do not touch any of the other garden plots in the same region*. The type `A` and `C` plants are each in a region with `perimeter 10`. The type `B` and `E` plants are each in a region with `perimeter 8`. The lone `D` plot forms its own region with `perimeter 4`.
 
 Visually indicating the sides of plots in each region that contribute to the perimeter using `-` and `|`, the above map's regions' perimeters are measured as follows:
 

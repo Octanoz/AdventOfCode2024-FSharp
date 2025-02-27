@@ -4,7 +4,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "dotnet build ${workspaceFolder}/Day10/Day10.fsproj",
+            "command": "dotnet build ${workspaceFolder}/Day12/Day12.fsproj",
             "problemMatcher": [
                 "$msCompile"
             ],

@@ -66,6 +66,13 @@ module Helpers =
             let maxCol = input[0].Length
             Array2D.init maxRow maxCol (fun i j -> if j < maxCol then input[i][j] else ' ')
 
+        let stringArrayTo2DBoolArray (input: string array) : bool array2d =
+            let maxRow = input.Length
+            let maxCol = input[0].Length
+            Array2D.create maxRow maxCol false
+
+        let falseGrid maxRow maxCol = Array2D.create maxRow maxCol false
+
         type Direction =
             | Up
             | Right
@@ -93,6 +100,8 @@ module Helpers =
                 move 3
             }
 
+        let valueAt (row, col) (grid: 'T array2d) = grid[row, col]
+
         let isWithinLimits (row, col) grid =
             let maxRow = grid |> Array2D.length1
             let maxCol = grid |> Array2D.length2
@@ -107,6 +116,12 @@ module Helpers =
         let checkNeighbours (row, col) grid =
             [ for moveRow, moveCol in dof4 -> movePair (moveRow, moveCol) (row, col) ]
             |> List.filter (fun (a, b) -> isWithinLimits (a, b) grid)
+
+        let getSameValueNeighbours currentPosition (grid: 'T array2d) =
+            let currentValue = grid |> valueAt currentPosition
+
+            anyFourNeighbours currentPosition
+            |> List.filter (fun (r, c) -> grid |> isWithinLimits (r, c) && grid |> valueAt (r, c) = currentValue)
 
         let dotNeighbours2D grid (row, col) =
             dof4

@@ -8,7 +8,7 @@ let input = inputData.ReadAllText 11 "input"
 let organizeInput = input.Split ' ' |> Array.map int64
 
 let getDivisor (num: int64) = pown 10L (int num)
-let digitCount num = floor (log10 num + 1.0)
+let digitCount (num: int64) = floor (log10 (float num) + 1.0)
 let hasEvenDigitCount num = int64 (digitCount num) % 2L = 0
 let takeHalf (x: int64) = x / 2L
 
@@ -27,34 +27,32 @@ let splitList =
 let splitCache =
     splitList |> List.map toKeyValue |> Dictionary<int64, int64 * int64>
 
-let splitStone (num: int64) =
+let splitStone num =
     match splitCache.TryGetValue(num) with
     | true, (x, y) -> x, y
     | false, _ ->
-        let divisor = int64 <| digitCount (double num) |> takeHalf |> getDivisor
+        let divisor = int64 <| digitCount num |> takeHalf |> getDivisor
         splitCache.Add(num, (num / divisor, num % divisor))
         splitCache[num]
 
 // Processing rules
-let transformStone (stone: int64) : int64 array =
+let transformStone stone =
     match stone with
     | 0L -> [| 1L |]
-    | _ when hasEvenDigitCount (double stone) ->
+    | _ when hasEvenDigitCount stone ->
         let first, second = splitStone stone
         [| second; first |]
     | _ -> [| stone * 2024L |]
 
 // Apply rules to every element and flatten the array
-let transformArray (currentArr: int64 array) : int64 array =
+let transformArray currentArr =
     currentArr |> Array.collect transformStone
 
-let simulateBlinks (initialStones: int64 array) (numBlinks: int) : int64 array =
+let simulateBlinks initialStones numBlinks =
     let rec applyTransformations acc remainingBlinks =
-        if remainingBlinks > 0 then
-            let newAcc = transformArray acc
-            applyTransformations newAcc (remainingBlinks - 1)
-        else
-            acc
+        match remainingBlinks > 0 with
+        | true -> applyTransformations (transformArray acc) (remainingBlinks - 1)
+        | false -> acc
 
     applyTransformations initialStones numBlinks
 
@@ -88,12 +86,10 @@ let blinkIterator currentCounts =
     for KeyValue(number, freq) in currentCounts do
         match number with
         | 0L -> updateDictionary newCounts 1 freq
-        | _ when double number |> hasEvenDigitCount ->
+        | _ when number |> hasEvenDigitCount ->
             pairToList (splitStone number)
             |> List.iter (fun split -> updateDictionary newCounts split freq)
-        | _ ->
-            let newStone = number * 2024L
-            updateDictionary newCounts newStone freq
+        | _ -> updateDictionary newCounts (number * 2024L) freq
 
     newCounts
 
@@ -111,9 +107,11 @@ let blinkIfTheyAreInTheRoomWithYou numBlinks =
     let finalCache = blinkLoop counterCache numBlinks
     finalCache
 
-let partOne = blink 25
-printfn "%d" partOne
+let partOne =
+    let resultOne = blink 25
+    printfn "In part 1, there were %d stones after blinking 25 times.\n" resultOne
 
 let partTwo =
     let stonesCache = blinkIfTheyAreInTheRoomWithYou 75
-    printfn $"%A{stonesCache |> Seq.toList}\n\n{stonesCache.Values |> Seq.sum} stones in part 2"
+
+    printfn $"In part 2, there were {stonesCache.Values |> Seq.sum} stones after blinking 75 timmes"
