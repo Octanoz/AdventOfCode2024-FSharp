@@ -24,7 +24,23 @@ module Helpers =
         let inline multiply2 (a, b) : int64 = a * b
         let inline equalPair (a1, b1) (a2, b2) = a1 = a2 && b1 = b2
         let inline comparePair (a1, b1) (a2, b2) = compare (a1, b1) (a2, b2)
-        let inline manhattanPair (a1, b1) (a2, b2) = abs (a1 - a2) + abs (b1 - b2)
+        let inline manhattan (a1, b1) (a2, b2) = abs (a1 - a2) + abs (b1 - b2)
+
+        let inline pairSequence left right =
+            seq {
+                for l in left do
+                    for r in right do
+                        yield l, r
+            }
+
+        let inline tripleSequence left middle right =
+            seq {
+                for l in left do
+                    for m in middle do
+                        for r in right do
+                            yield l, m, r
+            }
+
 
         let inline triplet x = x, x, x
         let inline mapTriple f (a, b, c) = f a, f b, f c
@@ -60,7 +76,34 @@ module Helpers =
             )
             |> List.ofArray
 
+    module Memoization =
+        open System.Collections.Generic
+        open System.Collections.Concurrent
+        open System.Threading
+
+        let inline memoizeInner (cache: Dictionary<_, _>) f x =
+            match cache.TryGetValue x with
+            | true, v -> v
+            | _ ->
+                let result = f x
+                cache.Add(x, result)
+                result
+
+        // Wrap f x into a cached version backed by a thread local Dictionary. Caches aren't shared between threads.
+        let memoizeThreadLocal f =
+            let cacheTl = new ThreadLocal<Dictionary<_, _>>(fun () -> Dictionary())
+
+            fun x ->
+                let cache = cacheTl.Value
+                memoizeInner cache f x
+
+        /// Wrap f x into a cached version backed by a ConcurrentDictionary. Caches shared between threads.
+        let memoizeConcurrent (f: 'a -> 'b) =
+            let cache = ConcurrentDictionary<'a, 'b>()
+            fun x -> cache.GetOrAdd(x, f)
+
     module Grid =
+
         let stringArrayTo2DCharArray (input: string array) =
             let maxRow = input.Length
             let maxCol = input[0].Length
@@ -150,28 +193,59 @@ module Helpers =
             | Down -> grid |> isObstacle (movePair currentPosition (move 6))
             | Left -> grid |> isObstacle (movePair currentPosition (move 3))
 
-    module Memoization =
+    [<AutoOpen>]
+    module DictEx =
         open System.Collections.Generic
-        open System.Collections.Concurrent
-        open System.Threading
 
-        let inline memoizeInner (cache: Dictionary<_, _>) f x =
-            match cache.TryGetValue x with
-            | true, v -> v
-            | _ ->
-                let result = f x
-                cache.Add(x, result)
-                result
+        /// Update a dictionary with a list of values. If the key already exists, append to the existing list.
+        /// Otherwise, create a new list and add it to the dictionary.
+        let updateDictionaryList key value (dict: Dictionary<'T, 'U list>) =
+            match dict.TryGetValue key with
+            | true, cachedValue -> dict[key] <- value :: cachedValue
+            | false, _ -> dict.Add(key, [ value ])
 
-        // Wrap f x into a cached version backed by a thread local Dictionary. Caches aren't shared between threads.
-        let memoizeThreadLocal f =
-            let cacheTl = new ThreadLocal<Dictionary<_, _>>(fun () -> Dictionary())
+    module MapExt =
 
-            fun x ->
-                let cache = cacheTl.Value
-                memoizeInner cache f x
+        let updateMapList (key: 'T) (value: 'U) (dict: Map<'T, 'U list>) =
+            match dict.TryFind key with
+            | Some cachedValue -> dict |> Map.change key (fun _ -> Some(value :: cachedValue))
+            | None -> dict.Add(key, [ value ])
 
-        /// Wrap f x into a cached version backed by a ConcurrentDictionary. Caches shared between threads.
-        let memoizeConcurrent (f: 'a -> 'b) =
-            let cache = ConcurrentDictionary<'a, 'b>()
-            fun x -> cache.GetOrAdd(x, f)
+        let updateMap (key: 'T) (value: 'U) (dict: Map<'T, 'U>) =
+            match dict.TryFind key with
+            | Some _ -> dict |> Map.change key (fun _ -> Some value)
+            | None -> dict.Add(key, value)
+
+    module PQ =
+
+        type 'a PQ = Map<System.IComparable, 'a list>
+
+        let length (pq: 'a PQ) : int =
+            pq |> (Map.values >> List.concat >> List.length)
+
+        let tryPop (q: 'a PQ) : ('a PQ * 'a) option =
+            if Map.isEmpty q then
+                None
+            else
+                match Map.minKeyValue q with
+                | _, [] -> None
+                | k, [ head ] -> Some(Map.remove k q, head)
+                | k, head :: rest -> Some(Map.add k rest q, head)
+
+        let push (priority: System.IComparable) (value: 'a) : 'a PQ -> 'a PQ =
+            let change =
+                function
+                | Some values -> value :: values
+                | None -> [ value ]
+                >> Some
+
+            Map.change priority change
+
+    [<AutoOpen>]
+    module ListExt =
+
+        let addItem (item: 'a) (l: 'a list) = item :: l
+
+        let mergeLists (l1: 'a list) (l2: 'a list) = l1 @ l2
+
+        let mergeItemAsList (item: 'a) (l: 'a list) = [ item ] @ l

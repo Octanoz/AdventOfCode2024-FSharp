@@ -139,7 +139,7 @@ Fortunately, the Elves are trying to order so much fence that they qualify for a
 - `A`, `B`, `D` and `E` have 4 sides
 - `C` has 8 sides
 
-This is the pricing using the bulk discount:
+Shown here are the total prices per region for the first example when using the bulk discount:
 
 | Region | Pricing |
 |:------:|:-------:|

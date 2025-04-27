@@ -1,6 +1,5 @@
 ﻿module Program
 
-open System.IO
 open AdventUtilities
 
 let inputData = InputData()

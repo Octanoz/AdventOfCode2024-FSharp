@@ -1,4 +1,9 @@
 {
     "dotnet.defaultSolution": "2024-Fsharp.sln",
-    "FSharp.inlayHints.disableLongTooltip": true
+    "FSharp.inlayHints.disableLongTooltip": true,
+    "FSharp.infoPanelReplaceHover": true,
+    "editor.hover.delay": 400,
+    "editor.hover.hidingDelay": 100,
+    "workbench.hover.delay": 400,
+    "FSharp.infoPanelUpdate": "onCursorMove"
 }
